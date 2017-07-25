@@ -24,91 +24,6 @@ var simConsole = {
     localEcho            : true,
 	isScreenChanged      : false,
     cursorBlinkSetInterval : null,
-	draw                 : function() {
-		var HTMLstr = "";
-        var textBeforeCursor = "";
-        var textAtCursor = "";
-        var textAfterCursor = "";
-		var textColorCSS = ""
-		var cursorColorCSS = ""
-        //var HTMLBeforeTextNormal = "<span style=\"background-color:#" + this.textBackgroundColor + 
-        //    ";color:#" + this.textForegroundColor + ";\">";
-        //var HTMLBeforeTextReverse = "<span style=\"background-color:#" + this.textForegroundColor + 
-        //   ";color:#" + this.textBackgroundColor + ";\">";
-        //var HTMLAfterText = "</span>";
-        
-		if (this.xSize == 0 || this.Size == 0) {
-			return;
-		}
-		
-        //this.fillScreenBuffer();
-        while (this.buffer.length < this.offset + this.ySize) {
-            this.buffer.push("");
-        }
-        
-        this.updateConsoleText();
-        
-		textColorCSS = "background-color: " + this.textBackgroundColor +
-		               "; color: " + this.textForegroundColor + ";";
-		if (this.cursorShow) {
-			cursorColorCSS = "background-color: " + this.textForegroundColor +
-		                     "; color: " + this.textBackgroundColor + ";";
-		} else {
-			cursorColorCSS = textColorCSS;
-		}
-		simConsole.textBeforeCursorHTML.style = textColorCSS;
-		simConsole.textAtCursorHTML.style = cursorColorCSS;
-		simConsole.textAfterCursorHTML.style = textColorCSS;
-		
-		textBeforeCursor += "buffer.length=" + this.buffer.length + "\r\r"; // For testing
-		
-        //textBeforeCursor += HTMLBeforeTextNormal;
-        //textAtCursor += HTMLBeforeTextReverse;
-        //textAfterCursor += HTMLBeforeTextNormal;
-        
-        for (var i = 0; i < this.ySize; i++) {
-            var textLine = "";
-            var beforeTextLine = "";
-            var afterTextLine = "";
-            
-            //if (this.ySize > 9 && i < 10) beforeTextLine += "0";      // For testing
-			//if (this.ySize > 99 && i < 100) beforeTextLine += "0";    // For testing
-			//beforeTextLine += i + ":&gt";                             // For testing
-			//afterTextLine = "&lt\r";
-            afterTextLine = "\r";
-            //textLine = this.buffer.substr(this.offset + (i * this.xSize), this.xSize);
-            
-            textLine = this.buffer[this.offset + i];
-            if (textLine.length < this.xSize) textLine += " ".repeat(this.xSize - textLine.length);  // Pad line to screen width
-            
-            if (i < this.cursorY) {
-                textBeforeCursor += beforeTextLine + textLine + afterTextLine;
-            } else if (i > this.cursorY) {
-                textAfterCursor +=  beforeTextLine + textLine + afterTextLine;
-            } else {
-                this.textUnderCursor = textLine.substr(this.cursorX, 1)
-                textBeforeCursor += beforeTextLine + textLine.substr(0, this.cursorX);
-				textAtCursor     += this.textUnderCursor;
-				textAfterCursor  += textLine.substring(this.cursorX + 1, textLine.length) + afterTextLine;
-            }
-		}
-        //textBeforeCursor += HTMLAfterText;
-        //textAtCursor += HTMLAfterText;
-        //textAfterCursor += HTMLAfterText;
-        
-        textAfterCursor += "\rInput buffer=<span style=\"background-color:#eee\">'" + this.inputBuffer + "'</span>";
-        
-        this.textBeforeCursorHTML.innerHTML = textBeforeCursor;
-        this.textAtCursorHTML.innerHTML = textAtCursor;
-        this.textAfterCursorHTML.innerHTML = textAfterCursor;
-        
-        if (this.cursorBlinkSetInterval == null) {
-            this.cursorBlinkSetInterval = setInterval(simConsole.cursorBlink, this.cursonFlashRate);
-        }
-		
-		this.isScreenChanged = false;
-		console.log("Screen repainted at " + "TIME" + ".");  // For testing.
-	},
     cursorBlink : function() {
         var cursorHTML = "";
         var foregroundColor = "";
@@ -173,26 +88,12 @@ var simConsole = {
                 this.cursorY -= 1;
             }
         }
-        //if (this.cursorX < 0) {
-        //    this.cursorX = 0;
-        //    if (this.cursorY > 0) this.cursorX = this.xSize - 1;
-        //    this.cursorY -= 1;
-        //}
-        //if (this.cursorX > this.xSize - 1) {
-        //    this.cursorX = 0;
-        //    this.cursorY += 1;
-        //}
         if (this.cursorY < 0) this.cursorY = 0;
         if (this.cursorY > this.ySize -1) this.cursorY = this.ySize -1;
     },
     charOut : function(s) {
         this.outputBuffer += s;
 		this.isScreenChanged = true;
-    },
-    fillScreenBuffer : function() {
-        //if (this.buffer.length < (this.xSize * this.ySize) + this.offset) {
-		//	this.buffer += " ".repeat((this.xSize * this.ySize) + this.offset - this.buffer.length);
-		//}
     },
     addTextToLine : function(lineNumber, offset, textToAdd) {
         var s = "";

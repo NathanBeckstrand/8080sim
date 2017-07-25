@@ -5,19 +5,26 @@
 <title>8080 Simulator v0.00 b0003</title>
 <style>
 .simConsole {
-	white-space: pre;
-	font-family:"Lucida Console";
-    //font-size: 100%;
-	//line-height: 115%;
-    //text-shadow: 2px 2px #030;
+  white-space: pre;
+  font-family: "Lucida Console";
+  font-size: 16px;
 }
 </style>
 <script src="simConsole.js" defer="true"></script>
+<script src="simConsole.draw.js" defer="true"></script>
+<script src="CPU.js" defer="true"></script>
+<script src="CPU.execute.js" defer="true"></script>
+<script src="CPU.instructions.js" defer="true"></script>
+<script src="MMU.js" defer="true"></script>
 <script src="8080sim.js" defer="true"></script>
 </head>
 <body>
-<p class="simConsole" id="CRT" onkeypress="simConsole.getKeyPress(event)" tabindex="0">
-<span id="textBeforeCursor"></span><span id="textAtCursor"></span><span id="textAfterCursor"></span>
-</p>
+<div class="simConsole" id="CRT" 
+     onkeypress="simConsole.getKeyPress(event)"
+     tabindex="0"><!-- Remove space between elements.
+  --><span id="textBeforeCursor"></span><!-- Remove space between elements.
+  --><span id="textAtCursor"></span><!-- Remove space between elements.
+  --><span id="textAfterCursor"></span>
+</div>
 </body>
 </html>
