@@ -95,7 +95,7 @@ var simConsole = {
         this.outputBuffer += s;
 		this.isScreenChanged = true;
     },
-    addTextToLine : function(lineNumber, offset, textToAdd) {
+    addTextToLineOLD : function(lineNumber, offset, textToAdd) {
         var s = "";
         while (this.buffer.length < lineNumber) {
             this.buffer.push("");
@@ -104,11 +104,30 @@ var simConsole = {
         if (s.length < offset) s += " ".repeat(offset - s.length);
         s += textToAdd;
         if (s.length > this.xSize) {
-            this.addTextToLine(lineNumber + 1, 0, s.substr(this.xSize,s.length));
-            s = s.substr(0,this.xSize);
+            this.addTextToLine(lineNumber + 1, 0, s.substring(this.xSize,s.length));
+            s = s.substring(0,this.xSize);
         }
         this.buffer[lineNumber] = s;
     },
+	addTextToLine : function(lineNumber, offset, textToAdd) {
+		//this.addTextToLineOLD(lineNumber, offset, textToAdd);
+        while (this.buffer.length < lineNumber) {
+            this.buffer.push("");
+		}
+		var s = this.buffer[lineNumber];
+		if (s.length < offset) s += " ".repeat(offset - s.length);
+		for (var c in textToAdd) {
+			//console.log("'" + textToAdd[c] + "'");
+			if (offset < this.xSize && textToAdd[c] != "\n") {
+				//console.log("'" + textToAdd[c] + "'");
+				s = s.substring(0,offset) + textToAdd[c] + s.substring(offset,s.length);
+				offset += 1;
+			} else {
+				this.addTextToLine(lineNumber + 1, 0, s.substring(c,s.length));
+			}
+		}
+		this.buffer[lineNumber] = s;
+	},
     updateConsoleText : function() {
         if (this.outputBuffer.length > 0) {
             this.addTextToLine(this.offset + this.cursorY, this.cursorX, this.outputBuffer);
