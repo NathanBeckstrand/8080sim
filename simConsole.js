@@ -95,7 +95,7 @@ var simConsole = {
         this.outputBuffer += s;
 		this.isScreenChanged = true;
     },
-    addTextToLineOLD : function(lineNumber, offset, textToAdd) {
+    addTextToLineOLD1 : function(lineNumber, offset, textToAdd) {
         var s = "";
         while (this.buffer.length < lineNumber) {
             this.buffer.push("");
@@ -118,19 +118,40 @@ var simConsole = {
 		if (s.length < offset) s += " ".repeat(offset - s.length);
 		for (var c in textToAdd) {
 			//console.log("'" + textToAdd[c] + "'");
+			//if (textToAdd.substr(c,1) == "\n") console.log("CR Detected");
+			//console.log("'" + textToAdd.charAt(c) + "'");
 			if (offset < this.xSize && textToAdd[c] != "\n") {
 				//console.log("'" + textToAdd[c] + "'");
+				console.log("Char='" + textToAdd.charAt(c) + "' charCode=" + textToAdd.charCodeAt(c) + ".");
 				s = s.substring(0,offset) + textToAdd[c] + s.substring(offset,s.length);
 				offset += 1;
 			} else {
+				console.log("New Line - offset=" + offset + "  xSize=" + this.xSize + "  charCodeAt(c)=" + textToAdd.charCodeAt(c));
+				this.cursorX = 0;
 				this.addTextToLine(lineNumber + 1, 0, s.substring(c,s.length));
 			}
 		}
 		this.buffer[lineNumber] = s;
 	},
-    updateConsoleText : function() {
+	addTextToLineNew : function(lineNumber, offset, textToAdd) {
+		// If buffer has less lines than lineNumber then add lines until buffer
+		// has number of lines == lineNumber.
+		
+		// If buffer line 
+		
+		for (var i = 0; i < textToAdd.length; i++) {
+			console.log("'" + textToAdd.charAt(i) + "', chr " + textToAdd.charCodeAt(i) + ".");
+		}
+	},
+    lineFeed : function() {
+		if (this.emptyLine.length != this.xSize) this.emptyLine = " ".repeat this.xSize;
+	},
+	updateConsoleText : function() {
         if (this.outputBuffer.length > 0) {
-            this.addTextToLine(this.offset + this.cursorY, this.cursorX, this.outputBuffer);
+            //for (var i = 0; i < this.outputBuffer.length; i++) {
+			//	console.log("'" + this.outputBuffer.charAt(i) + "', chr " + this.outputBuffer.charCodeAt(i) + ".");
+			//}
+			this.addTextToLine(this.offset + this.cursorY, this.cursorX, this.outputBuffer);
             this.moveCursorRel(this.outputBuffer.length,0);
             this.outputBuffer = "";
         }
